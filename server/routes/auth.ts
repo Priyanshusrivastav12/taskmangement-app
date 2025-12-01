@@ -5,14 +5,15 @@ import { registerValidation, loginValidation, validateRequest } from '../middlew
 
 const router = Router();
 
-router.post('/register', registerValidation, validateRequest, async (req: Request, res: Response) => {
+router.post('/register', registerValidation, validateRequest, async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password, name } = req.body;
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ error: 'User with this email already exists' });
+      res.status(400).json({ error: 'User with this email already exists' });
+      return;
     }
 
     // Create new user (password will be hashed automatically by the pre-save middleware)
@@ -35,29 +36,32 @@ router.post('/register', registerValidation, validateRequest, async (req: Reques
         name: newUser.name,
       },
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Registration error:', error);
     if (error.code === 11000) {
-      return res.status(400).json({ error: 'User with this email already exists' });
+      res.status(400).json({ error: 'User with this email already exists' });
+      return;
     }
     res.status(500).json({ error: 'Failed to register user' });
   }
 });
 
-router.post('/login', loginValidation, validateRequest, async (req: Request, res: Response) => {
+router.post('/login', loginValidation, validateRequest, async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
 
     // Find user by email
     const user = await User.findOne({ email }).select('+password_hash');
     if (!user) {
-      return res.status(401).json({ error: 'Invalid email or password' });
+      res.status(401).json({ error: 'Invalid email or password' });
+      return;
     }
 
     // Check password
     const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
-      return res.status(401).json({ error: 'Invalid email or password' });
+      res.status(401).json({ error: 'Invalid email or password' });
+      return;
     }
 
     const token = generateToken(user._id.toString());

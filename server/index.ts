@@ -40,7 +40,7 @@ app.use((req, res, next) => {
     res.header('Access-Control-Allow-Credentials', 'true');
     return res.sendStatus(200);
   }
-  next();
+  return next();
 });
 
 app.use('/api/auth', authRoutes);

@@ -5,7 +5,7 @@ import { itemValidation, validateRequest } from '../middleware/validation';
 
 const router = Router();
 
-router.get('/', authMiddleware, async (req: AuthRequest, res: Response) => {
+router.get('/', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const items = await Item.find({ user_id: req.userId })
       .sort({ created_at: -1 });
@@ -17,14 +17,15 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response) => {
   }
 });
 
-router.get('/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
+router.get('/:id', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
 
     const item = await Item.findOne({ _id: id, user_id: req.userId });
 
     if (!item) {
-      return res.status(404).json({ error: 'Item not found' });
+      res.status(404).json({ error: 'Item not found' });
+      return;
     }
 
     res.json({ item });
@@ -34,7 +35,7 @@ router.get('/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
   }
 });
 
-router.post('/', authMiddleware, itemValidation, validateRequest, async (req: AuthRequest, res: Response) => {
+router.post('/', authMiddleware, itemValidation, validateRequest, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { title, description, status } = req.body;
 
@@ -54,7 +55,7 @@ router.post('/', authMiddleware, itemValidation, validateRequest, async (req: Au
   }
 });
 
-router.put('/:id', authMiddleware, itemValidation, validateRequest, async (req: AuthRequest, res: Response) => {
+router.put('/:id', authMiddleware, itemValidation, validateRequest, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
     const { title, description, status } = req.body;
@@ -70,7 +71,8 @@ router.put('/:id', authMiddleware, itemValidation, validateRequest, async (req: 
     );
 
     if (!updatedItem) {
-      return res.status(404).json({ error: 'Item not found' });
+      res.status(404).json({ error: 'Item not found' });
+      return;
     }
 
     res.json({ message: 'Item updated successfully', item: updatedItem });
@@ -80,14 +82,15 @@ router.put('/:id', authMiddleware, itemValidation, validateRequest, async (req: 
   }
 });
 
-router.delete('/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
+router.delete('/:id', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
 
     const deletedItem = await Item.findOneAndDelete({ _id: id, user_id: req.userId });
 
     if (!deletedItem) {
-      return res.status(404).json({ error: 'Item not found' });
+      res.status(404).json({ error: 'Item not found' });
+      return;
     }
 
     res.json({ message: 'Item deleted successfully' });
