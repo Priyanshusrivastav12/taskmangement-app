@@ -12,7 +12,12 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
     "init-db": "tsx scripts/init-db.ts",
-    "test-connection": "tsx scripts/test-connection.ts"
+    "test-connection": "tsx scripts/test-connection.ts",
+    "setup-env": "npm run setup-frontend-env && npm run setup-backend-env",
+    "setup-frontend-env": "cp .env.frontend .env",
+    "setup-backend-env": "cp .env.backend server/.env",
+    "deploy-check": "npm run build && cd server && npm run build",
+    "generate-jwt-secret": "node -e \"console.log('JWT_SECRET=' + require('crypto').randomBytes(64).toString('hex'))\""
   },
   "dependencies": {
     "@types/mongoose": "^5.11.96",
