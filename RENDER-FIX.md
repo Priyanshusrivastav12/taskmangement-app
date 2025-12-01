@@ -64,6 +64,14 @@ PORT=10000
 node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
 ```
 
+### Step 4.5: Fix MongoDB Atlas Network Access
+**IMPORTANT**: Add `0.0.0.0/0` to your MongoDB Atlas IP whitelist:
+1. Go to MongoDB Atlas Dashboard
+2. Navigate to "Network Access" 
+3. Click "Add IP Address"
+4. Select "Allow Access from Anywhere" or enter `0.0.0.0/0`
+5. Save and wait 1-2 minutes for changes to propagate
+
 ### Step 5: Manual Deploy
 - Go to "Deploys" tab in Render
 - Click "Deploy latest commit"
