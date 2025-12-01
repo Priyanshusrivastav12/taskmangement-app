@@ -58,7 +58,7 @@ export const WeatherWidget = () => {
       // Using WeatherAPI.com - a real weather service
       const API_KEY = '1540f61f04e444b8a6a192238250112';
       const response = await fetch(
-        `http://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${encodeURIComponent(city)}&aqi=no`
+        `https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${encodeURIComponent(city)}&aqi=no`
       );
 
       if (!response.ok) {
